@@ -76,9 +76,8 @@ class GraphDataScience(DirectEndpoints, UncallableNamespace):
             try:
                 arrow_info: Series = self._query_runner.run_query("CALL gds.debug.arrow()").squeeze()
                 if arrow_info["running"]:
-                    self._query_runner = ArrowQueryRunner(
-                        arrow_info["listenAddress"], self._query_runner, auth, driver.encrypted, True
-                    )
+                    arrow_uri = endpoint.split(":")[0] + ":" + arrow_info["listenAddress"].split(":")[1]
+                    self._query_runner = ArrowQueryRunner(arrow_uri, self._query_runner, auth, driver.encrypted, True)
             except Exception as e:
                 # AuraDS does not have arrow support at this time, so we should not warn about it.
                 # TODO: Remove this check when AuraDS gets arrow support.
